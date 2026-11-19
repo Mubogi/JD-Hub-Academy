@@ -96,9 +96,38 @@ every year.
 
 ## For facilitators and institutions
 
+- **[AI-101 Delivery Plan](business/AI-101-DELIVERY-PLAN.md)** — the session-by-session teaching script: demos, lab tasks, exit tests, and what to watch for.
 - **[Facilitator Handbook](business/FACILITATOR-HANDBOOK.md)** — session shapes, learner types, difficult conversations, cohort preparation.
 - **[Business Manual](business/BUSINESS-MANUAL.md)** — pricing, unit economics, sales process, the AI ladder strategy, growth path, risk register.
 - **[Enrolment Handbook](business/ENROLMENT-HANDBOOK.md)** — the learner-facing document, from enquiry to certificate.
+
+### Client documents
+
+Print-ready and fill-in-the-blank, in `templates/`:
+
+| Document | Use |
+|---|---|
+| [Proposal](templates/PROPOSAL-TEMPLATE.md) | Send within 24 hours of a corporate conversation |
+| [Invoice](templates/INVOICE-TEMPLATE.md) | Issue the day the client confirms |
+| [Certificate](templates/CERTIFICATE-TEMPLATE.md) | Issued on passing the rubric, not attendance |
+| [Register & feedback](templates/REGISTER-AND-FEEDBACK.md) | Print both; paper beats a link in the room |
+
+Generated PDFs:
+
+- `build/JDHA-rate-card.pdf` — the full fee schedule, two pages, branded.
+- `build/JDHA-corporate-proposal-sheet.pdf` — one page for the person who signs.
+
+```bash
+python scripts/build_rate_card.py
+
+python scripts/build_certificate.py \
+  --name "Grace Nakato" --course ai-foundation \
+  --date 2026-03-14 --number JDHA-AI101-2026-001
+```
+
+Add `--attendance` for the attendance variant. Never use it for a learner who
+passed the rubric — the value of the completion certificate depends on the
+distinction.
 
 ---
 
@@ -134,6 +163,9 @@ python scripts/build_books.py
 
 # Regenerate the catalogue and per-course READMEs
 python scripts/build_index.py
+
+# Fee schedule and corporate proposal sheet
+python scripts/build_rate_card.py
 ```
 
 Individual items:
@@ -149,7 +181,8 @@ python scripts/build_books.py  --only ai-foundation
 assets/brand/          logo, fonts, logo card
 assets/covers/         book covers and wide banners
 assets/illustrations/  concept illustrations
-business/              business manual, facilitator handbook, enrolment handbook
+business/              business manual, handbooks, AI-101 delivery plan
+templates/             proposal, invoice, certificate, register and feedback
 courses/<slug>/        book.md source + README.md for each course
 build/                 generated PDFs
 scripts/               the entire build system

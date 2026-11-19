@@ -60,6 +60,22 @@ Two traps, both already fixed — do not reintroduce them:
 Logo files: `logo.svg`, `logo-light.svg`, `logo-mark.png`, `logo-card.png`. Copied
 from the `Mubogi/jd-hub` source repo — regenerate from there if the brand changes.
 
+`logo-mark-dark.png` and `logo-mark-light.png` are *derived* caches: `_mark_png()`
+knocks the white ground out of `logo-mark.png` on first use. They are gitignored
+and safe to delete — any build regenerates them. Never edit them by hand.
+
+## Business layer
+
+`business/` holds strategy and delivery documents; `templates/` holds
+client-facing fill-in documents. `scripts/build_rate_card.py` renders the fee
+schedule and the corporate proposal sheet; `scripts/build_certificate.py` renders
+a single certificate from a name, course slug and date.
+
+Prices live in `build_rate_card.py` as data tables *and* in
+`business/BUSINESS-MANUAL.md` as markdown. They are duplicated, so a price change
+must be made in both places. The rate card was cross-checked against the manual
+by title at build time — re-run that check after any pricing edit.
+
 ## Book conventions
 
 `book.md` uses a small set of custom callout blocks parsed by `build_books.py`:
