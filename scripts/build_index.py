@@ -15,7 +15,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from brand import ACCENTS, AUTHOR, AUTHOR_TITLE, ORG, ROOT, YEAR
+from brand import AUTHOR, AUTHOR_TITLE, ORG, ROOT, YEAR, theme_for
 from catalogue import COURSES
 
 COURSES_DIR = ROOT / "courses"
@@ -126,7 +126,7 @@ the material.
 
 
 def course_readme(c: dict) -> str:
-    acc = ACCENTS.get(c["category"], ACCENTS["software"])
+    acc = theme_for(c)["accent"]
     here = COURSES_DIR / c["slug"]
     cover = Path("..") / ".." / "assets" / "covers" / f"{c['slug']}.png"
     banner = Path("..") / ".." / "assets" / "covers" / f"{c['slug']}-wide.png"

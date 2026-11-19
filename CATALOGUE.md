@@ -1,7 +1,7 @@
 # JD Hub Academy — Course Catalogue
 
 **Mubogi Gastavas Jordan**, President, JD Hub Tech
-First Edition · 2026 · 19 courses · 410 printed pages
+First Edition · 2026 · 19 courses · 450 printed pages
 
 ---
 
@@ -9,25 +9,25 @@ First Edition · 2026 · 19 courses · 410 printed pages
 
 | Course | Code | Level | Duration | Pages |
 |---|---|---|---|---|
-| [From Scratch to President](courses/leadership/README.md) | LD-001 | Everyone | 52 weeks | 68 |
-| [AI in Everyday Life & Business](courses/ai-foundation/README.md) | AI-101 | Beginner | 6 weeks | 36 |
-| [AI Practitioner](courses/ai-practitioner/README.md) | AI-201 | Intermediate | 8 weeks | 24 |
-| [AI Builder](courses/ai-builder/README.md) | AI-301 | Advanced | 8 weeks | 19 |
-| [AI Specialist & Advisor](courses/ai-specialist/README.md) | AI-401 | Professional | 6 weeks | 19 |
-| [Scratch Coding](courses/scratch-coding/README.md) | SW-110 | Beginner | 8 weeks | 15 |
-| [Basic Digital Literacy](courses/digital-literacy/README.md) | SW-120 | Beginner | 4 weeks | 17 |
-| [Practical STEM](courses/practical-stem/README.md) | ST-130 | Beginner to Intermediate | 10 weeks | 16 |
-| [Graphic Design](courses/graphic-design/README.md) | DS-140 | Beginner to Intermediate | 6 weeks | 17 |
-| [Financial & SACCO Management](courses/financial-sacco/README.md) | FN-150 | Intermediate | 6 weeks | 18 |
-| [Microsoft Word](courses/microsoft-word/README.md) | MS-160 | Beginner to Intermediate | 2 weeks | 16 |
-| [Microsoft Excel](courses/microsoft-excel/README.md) | MS-170 | Beginner to Intermediate | 2 weeks | 18 |
-| [Microsoft PowerPoint](courses/microsoft-powerpoint/README.md) | MS-180 | Beginner to Intermediate | 2 weeks | 16 |
-| [Microsoft Access](courses/microsoft-access/README.md) | MS-190 | Intermediate to Advanced | 2 weeks | 17 |
-| [Microsoft Word + Excel Combo](courses/word-excel-combo/README.md) | MS-195 | Beginner to Intermediate | 2 weeks | 18 |
-| [Content Creation & Storytelling](courses/content-creation/README.md) | DS-210 | Beginner to Intermediate | 6 weeks | 21 |
-| [Digital Marketing](courses/digital-marketing/README.md) | MK-220 | Beginner to Intermediate | 8 weeks | 20 |
-| [Business Growth & Sales Systems](courses/business-growth/README.md) | BZ-230 | Intermediate | 8 weeks | 19 |
-| [Microsoft Office Suite (All Tools)](courses/microsoft-office-suite/README.md) | MS-200 | Beginner to Advanced | 4 weeks | 16 |
+| [From Scratch to President](courses/leadership/README.md) | LD-001 | Everyone | 52 weeks | 70 |
+| [AI in Everyday Life & Business](courses/ai-foundation/README.md) | AI-101 | Beginner | 6 weeks | 40 |
+| [AI Practitioner](courses/ai-practitioner/README.md) | AI-201 | Intermediate | 8 weeks | 26 |
+| [AI Builder](courses/ai-builder/README.md) | AI-301 | Advanced | 8 weeks | 20 |
+| [AI Specialist & Advisor](courses/ai-specialist/README.md) | AI-401 | Professional | 6 weeks | 21 |
+| [Scratch Coding](courses/scratch-coding/README.md) | SW-110 | Beginner | 8 weeks | 20 |
+| [Basic Digital Literacy](courses/digital-literacy/README.md) | SW-120 | Beginner | 4 weeks | 20 |
+| [Practical STEM](courses/practical-stem/README.md) | ST-130 | Beginner to Intermediate | 10 weeks | 17 |
+| [Graphic Design](courses/graphic-design/README.md) | DS-140 | Beginner to Intermediate | 6 weeks | 19 |
+| [Financial & SACCO Management](courses/financial-sacco/README.md) | FN-150 | Intermediate | 6 weeks | 20 |
+| [Microsoft Word](courses/microsoft-word/README.md) | MS-160 | Beginner to Intermediate | 2 weeks | 17 |
+| [Microsoft Excel](courses/microsoft-excel/README.md) | MS-170 | Beginner to Intermediate | 2 weeks | 19 |
+| [Microsoft PowerPoint](courses/microsoft-powerpoint/README.md) | MS-180 | Beginner to Intermediate | 2 weeks | 18 |
+| [Microsoft Access](courses/microsoft-access/README.md) | MS-190 | Intermediate to Advanced | 2 weeks | 18 |
+| [Microsoft Word + Excel Combo](courses/word-excel-combo/README.md) | MS-195 | Beginner to Intermediate | 2 weeks | 19 |
+| [Content Creation & Storytelling](courses/content-creation/README.md) | DS-210 | Beginner to Intermediate | 6 weeks | 23 |
+| [Digital Marketing](courses/digital-marketing/README.md) | MK-220 | Beginner to Intermediate | 8 weeks | 23 |
+| [Business Growth & Sales Systems](courses/business-growth/README.md) | BZ-230 | Intermediate | 8 weeks | 21 |
+| [Microsoft Office Suite (All Tools)](courses/microsoft-office-suite/README.md) | MS-200 | Beginner to Advanced | 4 weeks | 19 |
 
 ---
 
@@ -52,7 +52,7 @@ a facilitator. The final module of every AI book names the next tier explicitly.
 
 ## What every course includes
 
-- A complete course book (PDF, 410 pages across the library)
+- A complete course book (PDF, 450 pages across the library)
 - Module-by-module lessons with an exercise at the end of each
 - A capstone project assessed against a published rubric
 - A prompt or template library

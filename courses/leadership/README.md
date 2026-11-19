@@ -6,7 +6,7 @@
 
 **Course code:** LD-001 &nbsp;·&nbsp; **Level:** Everyone — the book to read first and re-read every year
 &nbsp;·&nbsp; **Duration:** 52 weeks · one principle and one task per week
-&nbsp;·&nbsp; **Book:** 68 pages
+&nbsp;·&nbsp; **Book:** 70 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

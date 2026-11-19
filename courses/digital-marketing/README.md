@@ -6,7 +6,7 @@
 
 **Course code:** MK-220 &nbsp;·&nbsp; **Level:** Beginner to Intermediate
 &nbsp;·&nbsp; **Duration:** 8 weeks · 16 sessions · 32 contact hours
-&nbsp;·&nbsp; **Book:** 20 pages
+&nbsp;·&nbsp; **Book:** 23 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

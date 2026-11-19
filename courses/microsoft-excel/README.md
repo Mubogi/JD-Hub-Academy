@@ -6,7 +6,7 @@
 
 **Course code:** MS-170 &nbsp;·&nbsp; **Level:** Beginner to Intermediate
 &nbsp;·&nbsp; **Duration:** 2 weeks · 8 sessions · 12 contact hours
-&nbsp;·&nbsp; **Book:** 18 pages
+&nbsp;·&nbsp; **Book:** 19 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

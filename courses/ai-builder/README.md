@@ -6,7 +6,7 @@
 
 **Course code:** AI-301 &nbsp;·&nbsp; **Level:** Advanced — comfortable with systems and data
 &nbsp;·&nbsp; **Duration:** 8 weeks · 16 sessions · 32 contact hours
-&nbsp;·&nbsp; **Book:** 19 pages
+&nbsp;·&nbsp; **Book:** 20 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

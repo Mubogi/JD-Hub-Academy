@@ -33,8 +33,8 @@ import markdown
 from weasyprint import HTML
 
 from brand import (
-    ACCENTS, AUTHOR, AUTHOR_TITLE, BLUE, CREAM, CYAN, GOLD, GOLD_2, GOLD_3,
-    NAVY, NAVY_2, ORG, RED, WHITE, YEAR, ROOT,
+    AUTHOR, AUTHOR_TITLE, CREAM, GOLD, GOLD_DEEP, GOLD_3, NAVY, ORG, RED,
+    YEAR, ROOT, theme_for,
 )
 from catalogue import COURSES
 
@@ -80,139 +80,180 @@ def _md(text: str) -> str:
 # Typography
 # ---------------------------------------------------------------------------
 def print_css(course: dict) -> str:
-    acc = ACCENTS.get(course["category"], ACCENTS["software"])
-    main = acc["main"]
+    t = theme_for(course)
+    main, ink, warm = t["accent"], t["ink"], t["warm"]
+    g1, g2 = t["grad"]
+    fonts = ROOT / "assets" / "brand" / "fonts"
+
+    def face(fam, fn, weight="100 900", style="normal"):
+        return ("@font-face{font-family:'%s';src:url('file://%s') "
+                "format('truetype');font-weight:%s;font-style:%s;font-display:block;}"
+                % (fam, (fonts / fn).as_posix(), weight, style))
 
     return f"""
-@font-face{{font-family:'Jakarta';src:url('file://{(ROOT / 'assets/brand/fonts/PlusJakartaSans.ttf').as_posix()}');
-  font-weight:100 900;}}
-@font-face{{font-family:'Bricolage';src:url('file://{(ROOT / 'assets/brand/fonts/BricolageGrotesque.ttf').as_posix()}');
-  font-weight:100 900;}}
-@font-face{{font-family:'Mono';src:url('file://{(ROOT / 'assets/brand/fonts/JetBrainsMono.ttf').as_posix()}');
-  font-weight:100 900;}}
+{face('Jakarta','PlusJakartaSans.ttf')}
+{face('Bricolage','BricolageGrotesque.ttf')}
+{face('Code','JetBrainsMono-Regular.ttf','400')}
+{face('Code','JetBrainsMono-Bold.ttf','700')}
+{face('Serif','SourceSerif4.ttf')}
+{face('Serif','SourceSerif4-Italic.ttf','100 900','italic')}
 
 @page {{
   size: A4;
-  margin: 22mm 20mm 20mm 20mm;
+  margin: 24mm 22mm 22mm 22mm;
   @top-left {{
     content: "{ORG}";
-    font-family:'Mono'; font-size:7.5pt; letter-spacing:.16em;
-    color:{GOLD_3}; text-transform:uppercase; padding-bottom:3mm;
+    font-family:'Code'; font-size:7pt; letter-spacing:.18em;
+    color:{GOLD_3}; text-transform:uppercase; padding-bottom:4mm;
   }}
   @top-right {{
     content: "{course['title']}";
-    font-family:'Jakarta'; font-size:7.5pt; color:#8b96ad; padding-bottom:3mm;
+    font-family:'Jakarta'; font-size:7pt; color:#94a0b8; padding-bottom:4mm;
   }}
-  @bottom-center {{
+  @bottom-left {{
+    content: "{AUTHOR}";
+    font-family:'Jakarta'; font-size:6.8pt; color:#a8b2c6;
+  }}
+  @bottom-right {{
     content: counter(page);
-    font-family:'Mono'; font-size:8pt; color:{GOLD_3};
+    font-family:'Code'; font-size:8.5pt; color:{GOLD_3};
   }}
 }}
-@page :first {{ margin:0; @top-left{{content:none}} @top-right{{content:none}} @bottom-center{{content:none}} }}
-@page cover {{ margin:0; @top-left{{content:none}} @top-right{{content:none}} @bottom-center{{content:none}} }}
-@page plain {{ @top-left{{content:none}} @top-right{{content:none}} @bottom-center{{content:none}} }}
+@page :first {{ margin:0;
+  @top-left{{content:none}} @top-right{{content:none}}
+  @bottom-left{{content:none}} @bottom-right{{content:none}} }}
+@page cover {{ margin:0;
+  @top-left{{content:none}} @top-right{{content:none}}
+  @bottom-left{{content:none}} @bottom-right{{content:none}} }}
+@page plain {{
+  @top-left{{content:none}} @top-right{{content:none}}
+  @bottom-left{{content:none}} @bottom-right{{content:none}} }}
 
-html {{ font-family:'Jakarta', sans-serif; }}
-body {{ font-size:10.6pt; line-height:1.62; color:#1b2233; }}
+html {{ font-family:'Serif', serif; }}
+body {{ font-size:10.8pt; line-height:1.68; color:#1a2233;
+  font-family:'Serif', serif; }}
 
 /* ---------- cover ---------- */
-.cover {{ page: cover; width:210mm; height:297mm; position:relative; overflow:hidden;
-  background:{NAVY}; color:{CREAM}; page-break-after:always; }}
+.cover {{ page: cover; width:210mm; height:297mm; position:relative;
+  overflow:hidden; background:{NAVY}; page-break-after:always; }}
 .cover img.full {{ width:100%; height:100%; object-fit:cover; display:block; }}
 
 /* ---------- front matter ---------- */
 .front {{ page: plain; page-break-after:always; }}
-.titlepage {{ padding-top:44mm; }}
-.titlepage .kicker {{ font-family:'Mono'; font-size:8.5pt; letter-spacing:.24em;
+.titlepage {{ padding-top:46mm; }}
+.titlepage .kicker {{ font-family:'Code'; font-size:8pt; letter-spacing:.26em;
   color:{GOLD_3}; text-transform:uppercase; }}
-.titlepage h1 {{ font-family:'Bricolage'; font-size:30pt; line-height:1.08;
-  letter-spacing:-.025em; color:{NAVY}; margin:8mm 0 5mm; font-weight:800; }}
-.titlepage .sub {{ font-size:13pt; color:#4a5568; line-height:1.45; }}
-.titlepage .meta {{ margin-top:26mm; font-size:9.5pt; color:#4a5568; line-height:2; }}
-.titlepage .meta b {{ color:{NAVY}; }}
-.rule {{ height:3pt; width:44mm; background:{main}; margin:9mm 0; }}
+.titlepage h1 {{ font-family:'Bricolage'; font-size:33pt; line-height:1.04;
+  letter-spacing:-.03em; color:{NAVY}; margin:9mm 0 6mm; font-weight:800; }}
+.titlepage .sub {{ font-family:'Serif'; font-size:13.5pt; color:#46536b;
+  line-height:1.5; }}
+.titlepage .meta {{ margin-top:26mm; font-size:9.5pt; color:#46536b;
+  line-height:2.05; font-family:'Jakarta'; }}
+.titlepage .meta b {{ color:{NAVY}; font-weight:700; }}
+.rule {{ height:3.5pt; width:46mm; background:linear-gradient(90deg,{g1},{g2});
+  margin:9mm 0; }}
 
-.copyright {{ page: plain; page-break-after:always; font-size:8.6pt; color:#4a5568; line-height:1.72;
-  padding-top:20mm; }}
-.copyright h2 {{ font-family:'Bricolage'; font-size:12pt; color:{NAVY}; margin:0 0 5mm;
-  font-weight:800; }}
-.copyright p {{ margin-bottom:3.2mm; }}
-.copyright .box {{ border:0.6pt solid #d8dde8; border-radius:2mm; padding:5mm; margin:6mm 0;
-  background:#fafbfd; }}
+/* hero illustration page */
+.hero {{ page: plain; page-break-after:always; text-align:center;
+  padding-top:14mm; }}
+.hero img {{ width:100%; border-radius:3mm; }}
+.hero .cap {{ font-family:'Code'; font-size:7.5pt; letter-spacing:.2em;
+  color:{GOLD_3}; margin-top:5mm; text-transform:uppercase; }}
+
+.copyright {{ page: plain; page-break-after:always; font-size:8.6pt;
+  color:#46536b; line-height:1.75; padding-top:20mm; font-family:'Jakarta'; }}
+.copyright h2 {{ font-family:'Bricolage'; font-size:13pt; color:{NAVY};
+  margin:0 0 5mm; font-weight:800; }}
+.copyright p {{ margin-bottom:3.4mm; }}
+.copyright .box {{ border:0.6pt solid #dbe1ec; border-radius:2.5mm;
+  padding:5mm; margin:6mm 0; background:{warm}; }}
 .copyright .box p {{ margin-bottom:2mm; }}
 
 /* ---------- toc ---------- */
 .toc {{ page: plain; page-break-after:always; }}
-.toc h2 {{ font-family:'Bricolage'; font-size:19pt; color:{NAVY}; margin:0 0 7mm; font-weight:800; }}
+.toc h2 {{ font-family:'Bricolage'; font-size:20pt; color:{NAVY};
+  margin:0 0 8mm; font-weight:800; letter-spacing:-.02em; }}
 .toc ol {{ list-style:none; padding:0; margin:0; }}
-.toc li {{ font-size:10pt; padding:2.1mm 0; border-bottom:0.4pt dotted #ccd3e0; color:#2d3748; }}
-.toc li .n {{ font-family:'Mono'; font-size:8pt; color:{GOLD_3}; margin-right:3mm; }}
+.toc li {{ font-family:'Jakarta'; font-size:10pt; padding:2.4mm 0;
+  border-bottom:0.4pt dotted #ccd4e2; color:#28324a; }}
+.toc li .n {{ font-family:'Code'; font-size:8pt; color:{main};
+  margin-right:3.5mm; font-weight:700; }}
 
 /* ---------- chapters ---------- */
-.book h1 {{ page-break-before:always; font-family:'Bricolage'; font-size:21pt; font-weight:800;
-  color:{NAVY}; letter-spacing:-.02em; line-height:1.14; margin:0 0 7mm;
-  padding-bottom:4mm; border-bottom:2.5pt solid {main}; }}
-.book h2 {{ font-family:'Bricolage'; font-size:13.4pt; font-weight:700; color:{NAVY};
-  margin:8mm 0 3mm; page-break-after:avoid; }}
-.book h3 {{ font-family:'Jakarta'; font-size:11pt; font-weight:700; color:#243b53;
-  margin:6mm 0 2mm; page-break-after:avoid; }}
-.book h4 {{ font-size:10.4pt; font-weight:700; color:#334155; margin:4mm 0 1.5mm;
-  page-break-after:avoid; }}
+.book h1 {{ page-break-before:always; font-family:'Bricolage';
+  font-size:22pt; font-weight:800; color:{NAVY}; letter-spacing:-.025em;
+  line-height:1.12; margin:0 0 8mm; padding-bottom:4.5mm;
+  border-bottom:3pt solid {main}; }}
+.book h2 {{ font-family:'Bricolage'; font-size:13.6pt; font-weight:700;
+  color:{NAVY}; margin:8mm 0 3mm; page-break-after:avoid;
+  letter-spacing:-.015em; }}
+.book h3 {{ font-family:'Jakarta'; font-size:11pt; font-weight:700;
+  color:{ink}; margin:6mm 0 2mm; page-break-after:avoid; }}
+.book h4 {{ font-family:'Jakarta'; font-size:10.3pt; font-weight:700;
+  color:#334155; margin:4mm 0 1.5mm; page-break-after:avoid; }}
 
-p {{ margin:0 0 3.4mm; text-align:left; }}
-ul, ol {{ margin:0 0 4mm; padding-left:6mm; }}
-li {{ margin-bottom:1.6mm; }}
-strong {{ color:#0f172a; }}
-em {{ color:#334155; }}
+p {{ margin:0 0 3.6mm; text-align:left; }}
+ul, ol {{ margin:0 0 4.2mm; padding-left:6.5mm; }}
+li {{ margin-bottom:1.8mm; }}
+strong {{ color:#0d1526; font-weight:700; }}
+em {{ color:#33405a; }}
 
-table {{ width:100%; border-collapse:collapse; margin:4mm 0 5mm; font-size:9pt;
-  page-break-inside:avoid; }}
-th {{ background:{NAVY}; color:{CREAM}; text-align:left; padding:2.4mm 3mm;
-  font-size:8.4pt; font-weight:700; letter-spacing:.03em; }}
-td {{ padding:2.2mm 3mm; border-bottom:0.4pt solid #e2e8f0; vertical-align:top; }}
-tr:nth-child(even) td {{ background:#f8fafc; }}
+table {{ width:100%; border-collapse:collapse; margin:4.5mm 0 5.5mm;
+  font-family:'Jakarta'; font-size:8.8pt; page-break-inside:avoid; }}
+th {{ background:{NAVY}; color:{CREAM}; text-align:left; padding:2.6mm 3mm;
+  font-size:8.2pt; font-weight:700; letter-spacing:.04em; }}
+td {{ padding:2.3mm 3mm; border-bottom:0.4pt solid #e4e9f2;
+  vertical-align:top; }}
+tr:nth-child(even) td {{ background:{warm}; }}
 
-code {{ font-family:'Mono'; font-size:8.8pt; background:#eef2f9; padding:0.6mm 1.4mm;
-  border-radius:1mm; color:#1e3a8a; }}
-pre {{ font-family:'Mono'; font-size:8.6pt; background:#0f172a; color:#e2e8f0;
-  padding:4mm; border-radius:2mm; line-height:1.5; page-break-inside:avoid;
-  margin:4mm 0; overflow-wrap:break-word; white-space:pre-wrap; }}
+code {{ font-family:'Code'; font-size:8.6pt; background:#eef2f9;
+  padding:0.6mm 1.5mm; border-radius:1mm; color:#1e3a8a; }}
+pre {{ font-family:'Code'; font-size:8.4pt; background:#0f172a;
+  color:#e2e8f0; padding:4.5mm; border-radius:2.5mm; line-height:1.55;
+  page-break-inside:avoid; margin:4.5mm 0; overflow-wrap:break-word;
+  white-space:pre-wrap; }}
 pre code {{ background:none; color:inherit; padding:0; }}
 
-blockquote {{ border-left:2.5pt solid {GOLD}; margin:4mm 0; padding:1mm 0 1mm 5mm;
-  color:#4a5568; font-style:italic; }}
+blockquote {{ border-left:3pt solid {main}; margin:4.5mm 0;
+  padding:1mm 0 1mm 5.5mm; color:#46536b; font-style:italic; }}
 
 /* ---------- callouts ---------- */
-.callout {{ margin:4.5mm 0; padding:4.2mm 5mm; border-radius:2mm; font-size:9.7pt;
-  page-break-inside:avoid; }}
+.callout {{ margin:5mm 0; padding:4.4mm 5.5mm; border-radius:2.5mm;
+  font-size:9.9pt; page-break-inside:avoid; }}
 .callout p:last-child {{ margin-bottom:0; }}
-.callout.scripture {{ background:#fdf8ec; border-left:3pt solid {GOLD};
-  font-family:'Bricolage'; font-style:italic; color:#5c4a1e; }}
-.callout.scripture p {{ font-size:10.2pt; line-height:1.55; }}
-.callout.scripture .ref {{ display:block; margin-top:2.5mm; font-family:'Mono';
-  font-style:normal; font-size:7.8pt; letter-spacing:.12em; color:{GOLD_3};
-  text-transform:uppercase; }}
-.callout.exercise {{ background:#eef4ff; border-left:3pt solid {BLUE}; }}
-.callout.exercise::before {{ content:"EXERCISE"; display:block; font-family:'Mono';
-  font-size:7.6pt; letter-spacing:.2em; color:{BLUE}; margin-bottom:2mm; }}
-.callout.warn {{ background:#fef2f2; border-left:3pt solid {RED}; }}
-.callout.warn::before {{ content:"CAUTION"; display:block; font-family:'Mono';
-  font-size:7.6pt; letter-spacing:.2em; color:{RED}; margin-bottom:2mm; }}
-.callout.box {{ background:#f4f7fb; border:0.5pt solid #d6deeb; }}
-.callout.note {{ background:#f0fdfa; border-left:3pt solid #0d9488; }}
-.callout.prayer {{ background:#f7f4ff; border-left:3pt solid #7c3aed; font-style:italic; }}
-.callout.story {{ background:#fffdf5; border:0.5pt solid #ecdfb8; font-style:italic; }}
+.callout.scripture {{ background:{warm}; border-left:3.5pt solid {GOLD_DEEP};
+  font-style:italic; color:#4a3a12; }}
+.callout.scripture p {{ font-size:10.3pt; line-height:1.6; }}
+.callout.scripture .ref {{ display:block; margin-top:2.8mm;
+  font-family:'Code'; font-style:normal; font-size:7.6pt;
+  letter-spacing:.14em; color:{GOLD_3}; text-transform:uppercase; }}
+.callout.exercise {{ background:{warm}; border-left:3.5pt solid {main}; }}
+.callout.exercise::before {{ content:"EXERCISE"; display:block;
+  font-family:'Code'; font-size:7.4pt; letter-spacing:.22em;
+  color:{main}; margin-bottom:2.2mm; font-weight:700; }}
+.callout.warn {{ background:#fef2f2; border-left:3.5pt solid {RED}; }}
+.callout.warn::before {{ content:"CAUTION"; display:block;
+  font-family:'Code'; font-size:7.4pt; letter-spacing:.22em;
+  color:{RED}; margin-bottom:2.2mm; font-weight:700; }}
+.callout.box {{ background:{warm}; border:0.5pt solid #dbe1ec; }}
+.callout.note {{ background:{warm}; border-left:3.5pt solid {main}; }}
+.callout.prayer {{ background:#f7f4ff; border-left:3.5pt solid #7c3aed;
+  font-style:italic; }}
+.callout.story {{ background:#fffdf5; border:0.5pt solid #ecdfb8;
+  font-style:italic; }}
 
-hr {{ border:none; border-top:0.5pt solid #d8dde8; margin:6mm 0; }}
+hr {{ border:none; border-top:0.5pt solid #dbe1ec; margin:6.5mm 0; }}
 
 /* ---------- colophon ---------- */
-.colophon {{ page: plain; page-break-before:always; text-align:center; padding-top:60mm; }}
-.colophon .mark {{ font-family:'Bricolage'; font-size:26pt; font-weight:800;
-  color:{NAVY}; letter-spacing:-.03em; }}
-.colophon .mark span {{ color:{BLUE}; }}
-.colophon .tag {{ font-family:'Mono'; font-size:8pt; letter-spacing:.3em;
+.colophon {{ page: plain; page-break-before:always; text-align:center;
+  padding-top:58mm; }}
+.colophon .mark {{ font-family:'Bricolage'; font-size:28pt; font-weight:800;
+  color:{NAVY}; letter-spacing:-.035em; }}
+.colophon .mark span {{ font-weight:500; opacity:.6; }}
+.colophon .tag {{ font-family:'Code'; font-size:8pt; letter-spacing:.32em;
   color:{GOLD_3}; margin-top:5mm; }}
-.colophon p {{ font-size:9pt; color:#4a5568; margin-top:12mm; line-height:1.7; }}
+.colophon p {{ font-size:9.2pt; color:#46536b; margin-top:13mm;
+  line-height:1.8; }}
 """
 
 
@@ -221,6 +262,11 @@ hr {{ border:none; border-top:0.5pt solid #d8dde8; margin:6mm 0; }}
 # ---------------------------------------------------------------------------
 def _cover_uri(course: dict) -> str:
     p = ROOT / "assets" / "covers" / f"{course['slug']}.png"
+    return p.as_uri() if p.exists() else ""
+
+
+def _illustration_uri(course: dict) -> str:
+    p = ROOT / "assets" / "illustrations" / f"{course['slug']}.png"
     return p.as_uri() if p.exists() else ""
 
 
@@ -248,6 +294,15 @@ def build(course: dict) -> Path:
         else '<div class="cover"></div>'
     )
 
+    illus_uri = _illustration_uri(course)
+    hero_block = (
+        f'<div class="hero"><img src="{illus_uri}">'
+        f'<div class="cap">{ORG} &nbsp;·&nbsp; '
+        f'{html_mod.escape(course["code"])}</div></div>'
+        if illus_uri
+        else ""
+    )
+
     doc = f"""<!doctype html><html><head><meta charset="utf-8">
 <title>{html_mod.escape(course['title'])} — {ORG}</title>
 <style>{print_css(course)}</style></head><body>
@@ -267,6 +322,8 @@ def build(course: dict) -> Path:
     <b>Edition</b> &nbsp; First Edition, {YEAR}
   </div>
 </div>
+
+{hero_block}
 
 <div class="copyright">
   <h2>Copyright &amp; Terms of Use</h2>
@@ -301,7 +358,7 @@ def build(course: dict) -> Path:
   <p><b>Contact</b><br>
   {ORG}, {AUTHOR_TITLE}<br>
   JD Hub Tech · Kampala, Uganda</p>
-  <p style="margin-top:8mm;font-family:'Mono';font-size:7.5pt;letter-spacing:.14em;color:{GOLD_3}">
+  <p style="margin-top:8mm;font-family:'Code';font-size:7.5pt;letter-spacing:.14em;color:{GOLD_3}">
   {ORG.upper()} · LEARN · BUILD · EARN</p>
 </div>
 

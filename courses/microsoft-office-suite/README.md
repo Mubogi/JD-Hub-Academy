@@ -6,7 +6,7 @@
 
 **Course code:** MS-200 &nbsp;·&nbsp; **Level:** Beginner to Advanced
 &nbsp;·&nbsp; **Duration:** 4 weeks · 16 sessions · 24 contact hours
-&nbsp;·&nbsp; **Book:** 16 pages
+&nbsp;·&nbsp; **Book:** 19 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

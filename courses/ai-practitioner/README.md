@@ -6,7 +6,7 @@
 
 **Course code:** AI-201 &nbsp;·&nbsp; **Level:** Intermediate — AI-101 or equivalent confidence
 &nbsp;·&nbsp; **Duration:** 8 weeks · 16 sessions · 32 contact hours
-&nbsp;·&nbsp; **Book:** 24 pages
+&nbsp;·&nbsp; **Book:** 26 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

@@ -6,7 +6,7 @@
 
 **Course code:** DS-210 &nbsp;·&nbsp; **Level:** Beginner to Intermediate
 &nbsp;·&nbsp; **Duration:** 6 weeks · 12 sessions · 24 contact hours
-&nbsp;·&nbsp; **Book:** 21 pages
+&nbsp;·&nbsp; **Book:** 23 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

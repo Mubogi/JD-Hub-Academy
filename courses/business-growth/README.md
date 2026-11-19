@@ -6,7 +6,7 @@
 
 **Course code:** BZ-230 &nbsp;·&nbsp; **Level:** Intermediate
 &nbsp;·&nbsp; **Duration:** 8 weeks · 16 sessions · 32 contact hours
-&nbsp;·&nbsp; **Book:** 19 pages
+&nbsp;·&nbsp; **Book:** 21 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

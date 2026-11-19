@@ -6,7 +6,7 @@
 
 **Course code:** FN-150 &nbsp;·&nbsp; **Level:** Intermediate
 &nbsp;·&nbsp; **Duration:** 6 weeks · 12 sessions · 24 contact hours
-&nbsp;·&nbsp; **Book:** 18 pages
+&nbsp;·&nbsp; **Book:** 20 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

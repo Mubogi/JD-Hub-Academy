@@ -6,7 +6,7 @@
 
 **Course code:** SW-120 &nbsp;·&nbsp; **Level:** Beginner — no computer experience assumed
 &nbsp;·&nbsp; **Duration:** 4 weeks · 8 sessions · 16 contact hours
-&nbsp;·&nbsp; **Book:** 17 pages
+&nbsp;·&nbsp; **Book:** 20 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

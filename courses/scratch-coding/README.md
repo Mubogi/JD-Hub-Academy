@@ -6,7 +6,7 @@
 
 **Course code:** SW-110 &nbsp;·&nbsp; **Level:** Beginner — ages 8 and up
 &nbsp;·&nbsp; **Duration:** 8 weeks · 16 sessions · 24 contact hours
-&nbsp;·&nbsp; **Book:** 15 pages
+&nbsp;·&nbsp; **Book:** 20 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

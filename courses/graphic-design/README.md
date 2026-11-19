@@ -6,7 +6,7 @@
 
 **Course code:** DS-140 &nbsp;·&nbsp; **Level:** Beginner to Intermediate
 &nbsp;·&nbsp; **Duration:** 6 weeks · 12 sessions · 24 contact hours
-&nbsp;·&nbsp; **Book:** 17 pages
+&nbsp;·&nbsp; **Book:** 19 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

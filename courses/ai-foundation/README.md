@@ -6,7 +6,7 @@
 
 **Course code:** AI-101 &nbsp;·&nbsp; **Level:** Beginner — no prior AI knowledge
 &nbsp;·&nbsp; **Duration:** 6 weeks · 12 sessions · 24 contact hours
-&nbsp;·&nbsp; **Book:** 36 pages
+&nbsp;·&nbsp; **Book:** 40 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

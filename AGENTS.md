@@ -45,8 +45,17 @@ plus a chromium binary for the asset renderer.
 | cyan | `#2fd6cd` | Tertiary accent |
 | red | `#c8102e` | Emphasis / rules |
 
-Fonts: Bricolage Grotesque (display), Plus Jakarta Sans (body), JetBrains Mono
-(code). Vendored in `assets/brand/fonts/`.
+Fonts: Bricolage Grotesque (display), Plus Jakarta Sans (body), Source Serif 4
+(long-form body), JetBrains Mono (code). Vendored in `assets/brand/fonts/`.
+
+Two traps, both already fixed — do not reintroduce them:
+
+1. Never name a `@font-face` family `Mono`. It is a CSS generic keyword, so
+   WeasyPrint silently ignores the rule and falls back to DejaVu Sans Mono.
+   The family is called `Code` throughout.
+2. WeasyPrint cannot load the JetBrains Mono variable font. Use the static
+   instances `JetBrainsMono-Regular.ttf` / `JetBrainsMono-Bold.ttf`. To make
+   another static cut: `instantiateVariableFont(TTFont(src), {"wght": 700})`.
 
 Logo files: `logo.svg`, `logo-light.svg`, `logo-mark.png`, `logo-card.png`. Copied
 from the `Mubogi/jd-hub` source repo — regenerate from there if the brand changes.

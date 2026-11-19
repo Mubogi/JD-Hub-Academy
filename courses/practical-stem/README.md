@@ -6,7 +6,7 @@
 
 **Course code:** ST-130 &nbsp;·&nbsp; **Level:** Beginner to Intermediate
 &nbsp;·&nbsp; **Duration:** 10 weeks · 20 sessions · 30 contact hours
-&nbsp;·&nbsp; **Book:** 16 pages
+&nbsp;·&nbsp; **Book:** 17 pages
 
 **Author:** Mubogi Gastavas Jordan, President, JD Hub Tech · JD Hub Academy
 

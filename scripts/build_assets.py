@@ -1,11 +1,11 @@
-"""Generate every cover and illustration in the repository.
+"""Generate every cover, banner and illustration in the repository.
 
 Run:  python scripts/build_assets.py [--only slug]
 
 Outputs:
   assets/covers/<slug>.png          1080x1528 book cover
   assets/covers/<slug>-wide.png     1600x900  web / slide banner
-  assets/illustrations/<slug>.png   1600x1200 concept figure for the book
+  assets/illustrations/<slug>.png   1600x1200 interior figure
   assets/brand/logo-card.png        square logo card for social
 """
 
@@ -19,25 +19,17 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import art
 from brand import (
-    ACCENTS, AUTHOR, AUTHOR_TITLE, BLUE, CREAM, CYAN, GOLD, GOLD_2, GOLD_3,
-    NAVY, NAVY_2, NAVY_3, ORG, RED, WHITE, YEAR, base_css, downscale,
-    logo_img, logo_mark_img, render, ROOT,
+    AUTHOR, AUTHOR_TITLE, CREAM, GOLD, GOLD_DEEP, ORG, RED, TAGLINE, YEAR,
+    base_css, downscale, logo_lockup, logo_mark, render, ROOT, theme_for,
 )
 from catalogue import COURSES
 
 
-def _accent(course: dict) -> dict:
-    return ACCENTS.get(course["category"], ACCENTS["software"])
-
-
-def _esc(text: str) -> str:
-    return (
-        text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
-    )
+def _esc(t: str) -> str:
+    return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
 def _wrap(text: str, limit: int) -> list[str]:
-    """Greedy word wrap for cover titles."""
     words, lines, cur = text.split(), [], ""
     for w in words:
         trial = f"{cur} {w}".strip()
@@ -52,167 +44,244 @@ def _wrap(text: str, limit: int) -> list[str]:
     return lines
 
 
+def _fit_title(title: str, max_lines: int = 3) -> tuple[list[str], int]:
+    """Pick the wrap width that fills the block without overflowing.
+
+    The title column is 660px wide, so the character budget shrinks as the
+    type grows. Try the widest setting first and step down until the title
+    fits in `max_lines`.
+    """
+    for limit in range(15, 7, -1):
+        lines = _wrap(title, limit)
+        if len(lines) <= max_lines:
+            break
+    n = len(lines)
+    size = {1: 104, 2: 90, 3: 76, 4: 64}.get(n, 58)
+    return lines, size
+
+
 # ---------------------------------------------------------------------------
-# Book cover — 1080 x 1528 (A5-ish ratio, prints well and posts well)
+# Book cover — 1080 x 1528. Print-safe, Instagram-safe, WhatsApp-preview-safe.
+#
+# Composition is a deliberate hierarchy:
+#   top bar    brand rule, gold to red
+#   header     logo lockup, course code, tier chip
+#   title      the dominant element, three lines maximum
+#   artwork    bleeds off the right edge, sits behind the title
+#   spec strip three facts a buyer scans before reading
+#   footer     author, imprint
 # ---------------------------------------------------------------------------
 def cover_html(course: dict) -> str:
-    acc = _accent(course)
-    main, soft = acc["main"], acc["soft"]
-    title_lines = _wrap(course["title"], 17)
-    # Shrink the type as the title gets longer so it always fits the block.
-    n = len(title_lines)
-    size = {1: 104, 2: 92, 3: 78, 4: 66}.get(n, 60)
-    title_html = "<br>".join(_esc(l) for l in title_lines)
+    t = theme_for(course)
+    acc, light, deep, mid = t["accent"], t["light"], t["deep"], t["mid"]
+    g1, g2 = t["grad"]
+    lines, size = _fit_title(course["title"])
+    title_html = "<br>".join(_esc(l) for l in lines)
 
-    tier_badge = (
-        f'<span style="background:{main};color:{NAVY};padding:7px 16px;border-radius:999px;'
-        f'font-size:15px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;">'
-        f'{_esc(course["tier"])} TIER</span>'
-        if course["tier"]
-        else f'<span style="border:1.5px solid {main};color:{main};padding:7px 16px;border-radius:999px;'
-        f'font-size:15px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;">'
-        f'{_esc(acc["label"])}</span>'
+    tier = course.get("tier") or ""
+    chip = (
+        f'<span style="background:{acc};color:{deep};padding:8px 18px;border-radius:999px;'
+        f'font-size:14px;font-weight:800;letter-spacing:.10em;text-transform:uppercase;'
+        f'white-space:nowrap;">{_esc(tier)} Tier</span>'
+        if tier
+        else f'<span style="border:1.5px solid {acc}77;color:{acc};padding:8px 18px;'
+        f'border-radius:999px;font-size:14px;font-weight:700;letter-spacing:.06em;'
+        f'white-space:nowrap;">{_esc(t["label"])}</span>'
     )
 
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 {base_css()}
-.page{{position:relative;width:1080px;height:1528px;background:{NAVY};overflow:hidden;}}
-.glow-a{{position:absolute;width:900px;height:900px;border-radius:50%;
-  background:radial-gradient(circle,{main}33 0%,transparent 68%);top:-330px;right:-300px;}}
-.glow-b{{position:absolute;width:800px;height:800px;border-radius:50%;
-  background:radial-gradient(circle,{GOLD}22 0%,transparent 70%);bottom:-380px;left:-320px;}}
-.rule{{position:absolute;left:0;right:0;height:10px;
-  background:linear-gradient(90deg,{main},{GOLD},{RED});}}
-.frame{{position:absolute;inset:38px;border:1px solid rgba(255,255,255,.12);border-radius:22px;}}
-.content{{position:relative;z-index:3;padding:92px 84px 0;display:flex;flex-direction:column;height:100%;}}
-.eyebrow{{display:flex;align-items:center;gap:14px;margin-bottom:44px;}}
-.pill{{font-family:'Mono';font-size:14px;letter-spacing:.2em;color:{GOLD_2};
-  border:1px solid rgba(255,209,102,.4);padding:7px 14px;border-radius:8px;}}
-.title{{font-family:'Bricolage';font-weight:800;font-size:{size}px;line-height:.97;
-  letter-spacing:-.03em;color:{CREAM};margin-bottom:26px;}}
-.sub{{font-size:26px;line-height:1.42;color:#b9c2d6;max-width:830px;font-weight:500;}}
-.specs{{position:absolute;left:84px;right:84px;top:640px;display:flex;gap:14px;z-index:4;}}
-.spec{{flex:1;border:1px solid rgba(255,255,255,.13);border-radius:14px;
-  padding:18px 16px;background:rgba(255,255,255,.035);}}
-.spec .k{{font-family:'Mono';font-size:11.5px;letter-spacing:.16em;color:{main};margin-bottom:9px;}}
-.spec .v{{font-size:19px;font-weight:700;color:{CREAM};line-height:1.25;}}
-.artbox{{position:absolute;right:-56px;bottom:196px;width:700px;opacity:.96;}}
-.artbox svg{{width:100%;height:auto;}}
-.footer{{position:absolute;left:84px;right:84px;bottom:66px;display:flex;
-  justify-content:space-between;align-items:flex-end;z-index:4;}}
-.author{{font-size:23px;font-weight:700;color:{CREAM};}}
-.role{{font-family:'Mono';font-size:13.5px;color:{GOLD_2};letter-spacing:.13em;margin-top:7px;}}
-.meta{{text-align:right;font-family:'Mono';font-size:13px;color:#8b96ad;line-height:1.9;}}
+.page{{position:relative;width:1080px;height:1528px;overflow:hidden;
+  background:
+    radial-gradient(1100px 780px at 88% -6%, {acc}26 0%, transparent 62%),
+    radial-gradient(900px 700px at -12% 104%, {g2}1f 0%, transparent 66%),
+    linear-gradient(168deg, {deep} 0%, {mid} 58%, {deep} 100%);}}
+/* --- brand rules ------------------------------------------------------- */
+.bar-top{{position:absolute;left:0;right:0;top:0;height:9px;
+  background:linear-gradient(90deg,{acc} 0%,{GOLD} 52%,{RED} 100%);z-index:6;}}
+.bar-bot{{position:absolute;left:0;right:0;bottom:0;height:5px;
+  background:linear-gradient(90deg,{RED} 0%,{GOLD} 48%,{acc} 100%);opacity:.9;z-index:6;}}
+/* --- artwork: right panel, clear of the type column -------------------- */
+.art{{position:absolute;right:-104px;top:414px;width:760px;opacity:.95;z-index:1;
+  filter:drop-shadow(0 40px 90px {acc}3d);}}
+.art svg{{width:100%;height:auto;}}
+/* a soft column edge keeps type and art on separate planes */
+.veil{{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(100deg,{deep}fa 0%,{deep}e0 44%,{deep}22 62%,transparent 72%);}}
+/* --- content ----------------------------------------------------------- */
+.wrap{{position:absolute;inset:0;z-index:4;padding:74px 82px 0;
+  display:flex;flex-direction:column;}}
+.head{{display:flex;justify-content:space-between;align-items:flex-start;}}
+.code{{font-family:'Code';font-size:13px;letter-spacing:.22em;color:{GOLD};
+  text-align:right;line-height:1.9;opacity:.92;}}
+.mid{{margin-top:auto;margin-bottom:auto;padding-top:34px;width:660px;}}
+.rule{{width:76px;height:4px;border-radius:2px;margin-bottom:26px;
+  background:linear-gradient(90deg,{acc},{GOLD});}}
+.title{{font-family:'Bricolage';font-weight:800;font-size:{size}px;line-height:.96;
+  letter-spacing:-.035em;color:{CREAM};margin-bottom:26px;}}
+.title em{{font-style:normal;
+  background:linear-gradient(96deg,{light} 0%,{acc} 55%,{GOLD} 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;}}
+.sub{{font-family:'Serif';font-size:24px;line-height:1.46;color:#c3cbdd;
+  max-width:640px;font-weight:400;}}
+/* --- spec strip -------------------------------------------------------- */
+.specs{{display:flex;gap:12px;margin-top:36px;width:660px;}}
+.spec{{flex:1;border:1px solid rgba(255,255,255,.14);border-radius:13px;
+  padding:15px 14px;background:rgba(255,255,255,.05);}}
+.spec .k{{font-family:'Code';font-size:10.5px;letter-spacing:.17em;color:{acc};
+  margin-bottom:8px;}}
+.spec .v{{font-size:17px;font-weight:700;color:{CREAM};line-height:1.24;}}
+/* --- footer ------------------------------------------------------------ */
+.foot{{display:flex;justify-content:space-between;align-items:flex-end;
+  padding:30px 0 58px;border-top:1px solid rgba(255,255,255,.10);margin-top:30px;}}
+.author{{font-size:22px;font-weight:700;color:{CREAM};letter-spacing:-.01em;}}
+.role{{font-family:'Code';font-size:12px;color:{GOLD};letter-spacing:.15em;margin-top:8px;}}
+.meta{{text-align:right;font-family:'Code';font-size:11.5px;color:#8791a6;line-height:1.95;}}
 </style></head><body><div class="page">
-  <div class="glow-a"></div><div class="glow-b"></div><div class="noise"></div>
-  <div class="rule" style="top:0"></div>
-  <div class="rule" style="bottom:0;height:6px;opacity:.85"></div>
-  <div class="frame"></div>
-  <div class="content">
-    <div class="eyebrow">{logo_img(44)}</div>
-    <div style="margin-bottom:26px">{tier_badge}</div>
+<div class="art">{art.art(course['slug'], 760, 570, g1, g2)}</div>
+<div class="veil"></div><div class="noise"></div>
+<div class="bar-top"></div><div class="bar-bot"></div>
+<div class="wrap">
+  <div class="head">
+    {logo_lockup(58)}
+    <div class="code">{_esc(course['code'])}<br>{YEAR}</div>
+  </div>
+  <div class="mid">
+    <div style="margin-bottom:26px;">{chip}</div>
+    <div class="rule"></div>
     <div class="title">{title_html}</div>
-    <div class="sub">{_esc(course["subtitle"])}</div>
+    <div class="sub">{_esc(course['subtitle'])}</div>
+    <div class="specs">
+      <div class="spec"><div class="k">LEVEL</div><div class="v">{_esc(course['level'].split('—')[0].strip())}</div></div>
+      <div class="spec"><div class="k">DURATION</div><div class="v">{_esc(course['duration'].split('·')[0].strip())}</div></div>
+      <div class="spec"><div class="k">FORMAT</div><div class="v">Facilitated</div></div>
+    </div>
   </div>
-  <div class="specs">
-    <div class="spec"><div class="k">LEVEL</div><div class="v">{_esc(course["level"].split("—")[0].strip())}</div></div>
-    <div class="spec"><div class="k">DURATION</div><div class="v">{_esc(course["duration"].split("·")[0].strip())}</div></div>
-    <div class="spec"><div class="k">CODE</div><div class="v">{_esc(course["code"])}</div></div>
-  </div>
-  <div class="artbox">{art.art(course["slug"], 700, 525, main, GOLD)}</div>
-  <div class="footer">
+  <div class="foot">
     <div>
       <div class="author">{AUTHOR}</div>
       <div class="role">{AUTHOR_TITLE.upper()}</div>
     </div>
-    <div class="meta">
-      {ORG.upper()}<br>{_esc(course["code"])} &nbsp;·&nbsp; {YEAR}
-    </div>
+    <div class="meta">{ORG.upper()}<br>KAMPALA · UGANDA</div>
   </div>
+</div>
 </div></body></html>"""
 
 
 # ---------------------------------------------------------------------------
-# Wide banner — 1600 x 900, for slides, web headers and WhatsApp previews
+# Wide banner — 1600 x 900, for slides, web headers and WhatsApp previews.
+# Left-weighted so text survives cropping in a link preview.
 # ---------------------------------------------------------------------------
 def wide_html(course: dict) -> str:
-    acc = _accent(course)
-    main, soft = acc["main"], acc["soft"]
+    t = theme_for(course)
+    acc, deep, mid = t["accent"], t["deep"], t["mid"]
+    g1, g2 = t["grad"]
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 {base_css()}
-.page{{position:relative;width:1600px;height:900px;background:linear-gradient(120deg,{NAVY} 0%,{NAVY_2} 55%,{soft} 100%);overflow:hidden;}}
-.glow{{position:absolute;width:1100px;height:1100px;border-radius:50%;
-  background:radial-gradient(circle,{main}2e 0%,transparent 66%);top:-420px;right:-300px;}}
-.wrap{{position:relative;z-index:3;padding:86px 92px;display:flex;height:100%;align-items:center;gap:60px;}}
-.left{{flex:1;max-width:840px;}}
-.right{{width:520px;flex:none;}}
-.right svg{{width:100%;height:auto;}}
-h1{{font-family:'Bricolage';font-weight:800;font-size:72px;line-height:1.0;letter-spacing:-.03em;color:{CREAM};margin:26px 0 22px;}}
-p{{font-size:25px;line-height:1.45;color:#b9c2d6;max-width:760px;}}
-.bar{{position:absolute;left:0;top:0;bottom:0;width:12px;background:linear-gradient(180deg,{main},{GOLD},{RED});}}
-.byline{{display:flex;align-items:center;gap:16px;margin-top:44px;font-size:19px;color:#8b96ad;}}
-.byline b{{color:{CREAM};font-weight:700;}}
-</style></head><body><div class="page"><div class="glow"></div><div class="noise"></div><div class="bar"></div>
-<div class="wrap"><div class="left">
-  {logo_img(40)}
-  <h1>{_esc(course["title"])}</h1>
-  <p>{_esc(course["subtitle"])}</p>
-  <div class="byline"><b>{AUTHOR}</b> · {AUTHOR_TITLE} · {ORG}</div>
-</div><div class="right">{art.art(course["slug"], 520, 390, main, GOLD)}</div></div>
+.page{{position:relative;width:1600px;height:900px;overflow:hidden;
+  background:
+    radial-gradient(1000px 760px at 84% 12%, {acc}2e 0%, transparent 64%),
+    linear-gradient(122deg,{deep} 0%,{mid} 62%,{deep} 100%);}}
+.edge{{position:absolute;left:0;top:0;bottom:0;width:11px;
+  background:linear-gradient(180deg,{acc},{GOLD},{RED});}}
+.art{{position:absolute;right:-70px;top:50%;transform:translateY(-50%);
+  width:720px;opacity:.9;filter:drop-shadow(0 30px 70px {acc}33);}}
+.art svg{{width:100%;height:auto;}}
+.veil{{position:absolute;inset:0;
+  background:linear-gradient(96deg,{deep}f5 0%,{deep}b8 46%,transparent 72%);}}
+.wrap{{position:relative;z-index:3;height:100%;padding:76px 88px;
+  display:flex;flex-direction:column;justify-content:center;max-width:980px;}}
+h1{{font-family:'Bricolage';font-weight:800;font-size:78px;line-height:.98;
+  letter-spacing:-.035em;color:{CREAM};margin:30px 0 22px;text-wrap:balance;}}
+p{{font-family:'Serif';font-size:27px;line-height:1.45;color:#c3cbdd;
+  max-width:790px;}}
+.by{{display:flex;align-items:center;gap:14px;margin-top:44px;font-size:19px;
+  color:#8791a6;font-family:'Jakarta';}}
+.by b{{color:{CREAM};font-weight:700;}}
+.pill{{display:inline-flex;align-items:center;gap:10px;margin-top:26px;
+  border:1px solid {acc}66;border-radius:999px;padding:9px 20px;
+  font-family:'Code';font-size:13px;letter-spacing:.18em;color:{acc};}}
+</style></head><body><div class="page">
+<div class="art">{art.art(course['slug'], 720, 540, g1, g2)}</div>
+<div class="veil"></div><div class="noise"></div><div class="edge"></div>
+<div class="wrap">
+  {logo_lockup(52)}
+  <h1>{_esc(course['title'])}</h1>
+  <p>{_esc(course['subtitle'])}</p>
+  <div class="pill">{_esc(course['code'])} &nbsp;·&nbsp; {_esc(course['duration'].split('·')[0].strip())}</div>
+  <div class="by"><b>{AUTHOR}</b> · {AUTHOR_TITLE}</div>
+</div>
 </div></body></html>"""
 
 
 # ---------------------------------------------------------------------------
-# Concept illustration — 1600 x 1200, the hero figure inside each book
+# Interior illustration — 1600 x 1200, the hero figure inside each book.
 # ---------------------------------------------------------------------------
 def illustration_html(course: dict) -> str:
-    acc = _accent(course)
-    main, soft = acc["main"], acc["soft"]
+    t = theme_for(course)
+    acc, deep, mid = t["accent"], t["deep"], t["mid"]
+    g1, g2 = t["grad"]
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 {base_css()}
-.page{{position:relative;width:1600px;height:1200px;
-  background:radial-gradient(circle at 50% 42%,{soft} 0%,{NAVY} 72%);overflow:hidden;
+.page{{position:relative;width:1600px;height:1200px;overflow:hidden;
+  background:
+    radial-gradient(760px 760px at 50% 40%, {mid} 0%, {deep} 74%);
   display:grid;place-items:center;}}
-.grid{{position:absolute;inset:0;opacity:.16;
-  background-image:linear-gradient({main}44 1px,transparent 1px),linear-gradient(90deg,{main}44 1px,transparent 1px);
-  background-size:64px 64px;
-  mask-image:radial-gradient(circle at 50% 50%,#000 30%,transparent 74%);
-  -webkit-mask-image:radial-gradient(circle at 50% 50%,#000 30%,transparent 74%);}}
-.ring{{position:absolute;width:820px;height:820px;border-radius:50%;
-  border:1px solid {main}30;}}
-.ring2{{position:absolute;width:1080px;height:1080px;border-radius:50%;border:1px solid {GOLD}18;}}
-.art{{position:relative;z-index:3;width:760px;}}
-.art svg{{width:100%;height:auto;filter:drop-shadow(0 26px 60px {main}44);}}
-.cap{{position:absolute;left:0;right:0;bottom:70px;text-align:center;z-index:4;}}
-.cap .t{{font-family:'Bricolage';font-weight:800;font-size:44px;color:{CREAM};letter-spacing:-.02em;}}
-.cap .s{{font-family:'Mono';font-size:15px;letter-spacing:.22em;color:{GOLD_2};margin-top:16px;}}
+.grid{{position:absolute;inset:0;opacity:.14;
+  background-image:linear-gradient({acc}55 1px,transparent 1px),
+                   linear-gradient(90deg,{acc}55 1px,transparent 1px);
+  background-size:66px 66px;
+  mask-image:radial-gradient(circle at 50% 46%,#000 26%,transparent 72%);
+  -webkit-mask-image:radial-gradient(circle at 50% 46%,#000 26%,transparent 72%);}}
+.ring{{position:absolute;width:880px;height:880px;border-radius:50%;
+  border:1px solid {acc}33;}}
+.ring2{{position:absolute;width:1160px;height:1160px;border-radius:50%;
+  border:1px solid {GOLD}1c;}}
+.art{{position:relative;z-index:3;width:800px;
+  filter:drop-shadow(0 34px 80px {acc}4a);}}
+.art svg{{width:100%;height:auto;}}
+.cap{{position:absolute;left:0;right:0;bottom:76px;text-align:center;z-index:4;}}
+.cap .t{{font-family:'Bricolage';font-weight:800;font-size:46px;color:{CREAM};
+  letter-spacing:-.025em;}}
+.cap .s{{font-family:'Code';font-size:14px;letter-spacing:.24em;color:{GOLD};
+  margin-top:18px;}}
 </style></head><body><div class="page">
-<div class="grid"></div><div class="ring"></div><div class="ring2"></div><div class="noise"></div>
-<div class="art">{art.art(course["slug"], 760, 570, main, GOLD)}</div>
-<div class="cap"><div class="t">{_esc(course["title"])}</div>
-<div class="s">{ORG.upper()} &nbsp;·&nbsp; {_esc(course["code"])}</div></div>
+<div class="grid"></div><div class="ring"></div><div class="ring2"></div>
+<div class="noise"></div>
+<div class="art">{art.art(course['slug'], 800, 600, g1, g2)}</div>
+<div class="cap"><div class="t">{_esc(course['title'])}</div>
+<div class="s">{ORG.upper()} &nbsp;·&nbsp; {_esc(course['code'])}</div></div>
 </div></body></html>"""
 
 
 def logo_card_html() -> str:
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>
 {base_css()}
-.page{{position:relative;width:1080px;height:1080px;background:
-  radial-gradient(circle at 30% 25%,{NAVY_3} 0%,{NAVY} 62%);display:grid;place-items:center;overflow:hidden;}}
-.glow{{position:absolute;width:900px;height:900px;border-radius:50%;
-  background:radial-gradient(circle,{GOLD}26 0%,transparent 68%);}}
+.page{{position:relative;width:1080px;height:1080px;overflow:hidden;
+  background:radial-gradient(circle at 32% 24%,#122043 0%,#060b18 64%);
+  display:grid;place-items:center;}}
+.glow{{position:absolute;width:940px;height:940px;border-radius:50%;
+  background:radial-gradient(circle,{GOLD}2b 0%,transparent 66%);}}
 .inner{{position:relative;z-index:3;text-align:center;}}
-.mark{{margin-bottom:44px;filter:drop-shadow(0 18px 40px rgba(0,0,0,.5));}}
-.word{{font-family:'Bricolage';font-weight:800;font-size:88px;letter-spacing:-.035em;color:{CREAM};}}
-.word span{{color:{BLUE}}}
-.tag{{font-family:'Mono';font-size:19px;letter-spacing:.34em;color:{GOLD_2};margin-top:26px;}}
-.rule{{width:180px;height:4px;margin:40px auto 0;border-radius:2px;
-  background:linear-gradient(90deg,{GOLD_2},{GOLD},{RED});}}
+.mark{{margin-bottom:46px;display:flex;justify-content:center;
+  filter:drop-shadow(0 20px 46px rgba(0,0,0,.55));}}
+.word{{font-family:'Bricolage';font-weight:800;font-size:86px;
+  letter-spacing:-.038em;color:{CREAM};}}
+.word span{{font-weight:500;opacity:.72;}}
+.tag{{font-family:'Code';font-size:17px;letter-spacing:.36em;color:{GOLD};
+  margin-top:26px;}}
+.rule{{width:190px;height:4px;margin:42px auto 0;border-radius:2px;
+  background:linear-gradient(90deg,{GOLD},{RED});}}
+.sub{{font-family:'Serif';font-size:19px;color:#8791a6;margin-top:26px;
+  letter-spacing:.02em;}}
 </style></head><body><div class="page"><div class="glow"></div><div class="noise"></div>
-<div class="inner"><div class="mark">{logo_mark_img(300)}</div>
-<div class="word">JD Hub <span>Academy</span></div>
-<div class="tag">LEARN · BUILD · EARN</div>
-<div class="rule"></div></div></div></body></html>"""
+<div class="inner">
+  <div class="mark">{logo_mark(300)}</div>
+  <div class="word">JD Hub <span>Academy</span></div>
+  <div class="tag">{TAGLINE}</div>
+  <div class="rule"></div>
+  <div class="sub">A training initiative of JD Hub Tech · Kampala</div>
+</div></div></body></html>"""
 
 
 def main() -> None:
@@ -221,7 +290,6 @@ def main() -> None:
     args = ap.parse_args()
 
     todo = [c for c in COURSES if not args.only or c["slug"] == args.only]
-
     covers = ROOT / "assets" / "covers"
     illus = ROOT / "assets" / "illustrations"
 
