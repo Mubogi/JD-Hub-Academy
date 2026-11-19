@@ -76,6 +76,29 @@ Prices live in `build_rate_card.py` as data tables *and* in
 must be made in both places. The rate card was cross-checked against the manual
 by title at build time — re-run that check after any pricing edit.
 
+## Cohort calendar
+
+`scripts/calendar_plan.py` is the model: intakes, slots, capacity, fees and
+cohort economics. `scripts/build_calendar.py` renders it to
+`business/COHORT-CALENDAR.md` and `build/JDHA-cohort-calendar.pdf`. Never edit
+the generated dates by hand — change the model and re-run.
+
+Three constraints are encoded there and should not be relaxed casually:
+
+1. **Every AI tier runs at every intake.** Consecutive intakes are 52 days
+   apart, so this is what keeps the 60-day ladder discount keepable. Running one
+   tier per quarter breaks the promise for three cohorts out of four.
+2. **Higher tiers start only when graduates exist** — AI-201 from the second
+   intake, AI-301 from the third, AI-401 from the fourth. Otherwise the class
+   has nobody eligible to enrol.
+3. **One facilitator runs one room.** `FACILITATORS` caps cohorts per slot.
+   Exceeding it produces a schedule that cannot physically be delivered.
+
+`scripts/test_calendar.py` asserts the ladder promise, capacity, course
+coverage, date sanity, non-negative contribution and output determinism. Run it
+after touching the schedule. It was checked against a deliberately broken
+schedule to confirm it actually fails.
+
 ## Book conventions
 
 `book.md` uses a small set of custom callout blocks parsed by `build_books.py`:

@@ -96,6 +96,7 @@ every year.
 
 ## For facilitators and institutions
 
+- **[Cohort Calendar](business/COHORT-CALENDAR.md)** — every intake, date, slot and enrolment window for 2026–2027, with the AI ladder checked against its own 60-day promise.
 - **[AI-101 Delivery Plan](business/AI-101-DELIVERY-PLAN.md)** — the session-by-session teaching script: demos, lab tasks, exit tests, and what to watch for.
 - **[Facilitator Handbook](business/FACILITATOR-HANDBOOK.md)** — session shapes, learner types, difficult conversations, cohort preparation.
 - **[Business Manual](business/BUSINESS-MANUAL.md)** — pricing, unit economics, sales process, the AI ladder strategy, growth path, risk register.
@@ -114,6 +115,7 @@ Print-ready and fill-in-the-blank, in `templates/`:
 
 Generated PDFs:
 
+- `build/JDHA-cohort-calendar.pdf` — the intake calendar, branded, for staff and partners.
 - `build/JDHA-rate-card.pdf` — the full fee schedule, two pages, branded.
 - `build/JDHA-corporate-proposal-sheet.pdf` — one page for the person who signs.
 
@@ -166,6 +168,9 @@ python scripts/build_index.py
 
 # Fee schedule and corporate proposal sheet
 python scripts/build_rate_card.py
+
+# Cohort calendar (markdown + PDF), generated from calendar_plan.py
+python scripts/build_calendar.py
 ```
 
 Individual items:
@@ -181,7 +186,7 @@ python scripts/build_books.py  --only ai-foundation
 assets/brand/          logo, fonts, logo card
 assets/covers/         book covers and wide banners
 assets/illustrations/  concept illustrations
-business/              business manual, handbooks, AI-101 delivery plan
+business/              business manual, handbooks, delivery plan, cohort calendar
 templates/             proposal, invoice, certificate, register and feedback
 courses/<slug>/        book.md source + README.md for each course
 build/                 generated PDFs

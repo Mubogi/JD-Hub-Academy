@@ -237,6 +237,12 @@ Run cohorts on a fixed rhythm so marketing becomes predictable:
 Plus rolling two-week Office courses, which can start any Monday there are six
 enrolled.
 
+The dated schedule — every course, slot, start date and enrolment window for
+2026–2027 — lives in **[COHORT-CALENDAR.md](COHORT-CALENDAR.md)**. That document
+is generated from `scripts/calendar_plan.py`, which also checks that the 60-day
+ladder discount can actually be honoured at each intake. Change the rhythm here
+and regenerate there; do not edit dates by hand.
+
 ### 6.2 Room and equipment checklist
 
 - [ ] Seating for the enrolled number plus two
